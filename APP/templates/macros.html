@@ -1,0 +1,10 @@
+{% macro photo_card(photo) %} <!--渲染图片的宏-->
+
+<div class="photo-card card">
+    <a class="card-thumbnail" href="{{ url_for('photo.show_photo',username=user) }}"> <!--点击可以显示图片详情-->
+        <img class="card-img-top portrait" src="{{ url_for('photo.get_photo',filename=photo.filename_s) }}"><!--显示图片-->
+    </a>
+</div>
+
+
+{% endmacro %}

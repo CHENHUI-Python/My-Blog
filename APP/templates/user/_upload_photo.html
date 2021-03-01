@@ -1,0 +1,25 @@
+{% block styles %}
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dropzone.min.css') }}" type="text/css">
+    {{ dropzone.style('margin: 20px 0; border: 2px dashed #0087F7; min-height: 400px;') }}
+{% endblock %}
+<h1><b>上传图片</b></h1>
+    {{ dropzone.create(action='photo.upload') }}
+    <p style="text-align:center">
+        <small style="color:#e70808">提示：单个文件大小不允许超过3M</small>
+    </p>
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/dropzone.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    {{ dropzone.config() }}
+    <script type="text/javascript">
+        var csrf_token = "{{ csrf_token() }}";
+        {% if current_user.is_authenticated %}
+            var is_authenticated = true;
+        {% else %}
+            var is_authenticated = false;
+        {% endif %}
+    </script>
+{% endblock %}

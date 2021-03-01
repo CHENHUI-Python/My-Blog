@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+
+{% block x %}
+
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-md-9">
+            <img  src="{{ url_for('photo.get_photo',filename=photo.filename_m) }}"><hr>
+                <div class="nav">
+                    <a class="btn btn-primary" href="{{ url_for('photo.photo_previous',photo_id=photo.id) }}">上一张</a>&nbsp;
+                    <a class="btn btn-primary" href="{{ url_for('photo.photo_next',photo_id=photo.id) }}">下一张</a>&nbsp;
+                    <a class="btn btn-dark" href="{{ url_for('photo.show_photo',username=photo.users.username) }}">返回相册</a>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {% if current_user == photo.users %}
+                        <form  method="post" action="{{ url_for('photo.delete_photo',photo_id=photo.id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <input class="btn btn-danger" type="submit" onclick="return confirm('确定删除吗')" value="删除"/>
+                        </form>
+                    {% endif %}
+                </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card-header" style="text-align:center"><h4><b>简介</b></h4></div>
+            <div class="card-body">
+                上传时间 : {{ moment(photo.timestamp).format('LL') }}<hr>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block x %}
+
+<div class="jumbotron">
+<div class="row">
+    <div class="col-md-8">
+        <div class="card-header w-100" style="text-align:center">
+            <h3><b>{{ note.title }}</b></h3>
+        </div><br>
+        <main style="text-align:center">
+        {{ note.body|safe }}
+        </main><br>
+
+        作者：<a href="{{ url_for('user.index',username=note.users.username) }}">{{ note.users.name }}</a>&nbsp;&nbsp;
+        发表时间：{{ moment(note.timestamp).format('LL') }}&nbsp;&nbsp;
+        {% if current_user == note.users %}
+            <form class="float-right" method="post" action="{{ url_for('user.can_comment' ,note_id=note.id)}}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button type="submit" class="btn btn-warning btn-sm">
+                    {% if note.can_comment %}关闭评论区{% else %}开放评论区{% endif %}
+                    </button>
+            </form>
+        {% endif %}<hr>
+    {% if current_user.is_authenticated %}
+        <h5><b>【{{ note.title }}】有:{{ comments|length }}条评论</b></h5>
+    {% endif %}
+        <div>
+            {% for comment in comments %}
+                <img  src="{{ url_for('photo.get_avatar',filename=comment.user.avatar_m) }}"
+                      style="float:left;margin-right:10px;"><br>
+                <p>
+                    <a href="{{ url_for('user.index',username=comment.user.username) }}" style="font-size: 25px">
+                        {{ comment.user.name }}
+                    </a>
+                </p>
+                <p>{{ comment.body }}</p>
+                {{ moment(comment.timestamp).format('LL') }}
+                <small class="float-right">
+                {% if current_user == comment.note.users %}
+                    <form method="post" action="{{ url_for('user.delete_comment',comment_id=comment.id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <input class="bin btn-danger btn-sm" type="submit" value="删除"/>
+                    </form>
+                {% endif %}
+                </small>
+                <hr>
+        {% endfor %}
+        </div>
+        {% if current_user.is_authenticated %}
+            {% if note.can_comment %}
+                {{ render_form(form) }}
+            {% else %}
+                <div class="tip">
+                    <h3>作者已禁止评论</h3>
+                </div>
+            {% endif %}
+        {% else %}
+            <div class="tip" style="text-align:center">
+                <h5><a href="{{ url_for('user.login') }}">登录</a> <b>后才可以评论</b></h5>
+            </div>
+        {% endif %}
+    {% if comments %}
+        <div class="page-footer">{{ render_pagination(pagination) }}</div>
+    {% endif %}
+    </div>
+            <div class="col-md-4">
+                {% if current_user == note.users %}
+                    <div style="color:#fd5614" class="card-header"><h3 style="text-align:center">我的信息</h3></div>
+                {% else %}
+                    <div style="color:#fd5614" class="card-header"><h3 style="text-align:center">本文作者</h3></div>
+                {% endif %}
+                    <div class="card-body">
+                        <img  src="{{ url_for('photo.get_avatar',filename=note.users.avatar_m) }}"
+                              style="float:left;margin-right:10px;"><br>
+                            <p style="font-size: 25px">
+                                <a href="{{url_for('user.index',username=note.users.username) }}">{{ note.users.name }}</a>
+                            </p>
+                            <p>作品数量：{{ note.users.notes|length }}</p>
+                        注册时间：{{ moment(note.users.timestamp).format('LL') }}
+                    </div><hr>
+            {% if note.photos %}
+                {% for photo in note.photos %}
+                <img  src="{{ url_for('photo.get_photo',filename=photo.filename_x) }}">
+                {% endfor %}
+            {% else %}
+                {% include '_sidebar.html' %}
+            {% endif %}
+            </div>
+</div>
+</div>
+{% endblock x %}

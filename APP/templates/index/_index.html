@@ -1,0 +1,43 @@
+
+<div style="text-align:center" class="card-header"><h4 style="color:#fd5614"><b>我的信息</b></h4></div>
+    <div class="list-group list-group-flush">
+        <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+            <p>
+                <img style="float:left;margin-right:10px;" src="{{ url_for('photo.get_avatar',filename=current_user.avatar_m) }}">
+
+                <a class="float-left" style="font-size: 25px"><b>昵称</b>：
+                    <a style="font-size: 25px" href="{{ url_for('user.index',username=current_user.username) }}">
+                        {{ current_user.name }}
+                    </a>
+                </a><br>
+                <a class="float-left" style="font-size: 20px"><b>作品</b>：{{ current_user.notes|length }}</a>
+            </p>
+        </div>
+    </div><hr>
+<div style="text-align:center" class="card-header"><h4 style="color:#fd5614"><b>文章列表</b></h4></div>
+<div class="list-group list-group-flush">
+    <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+        <ul>
+        {% if notes %}
+            {% for note in notes %}
+            <li>
+                    <a href="{{ url_for('user.show_note',note_id=note.id) }}">{{ note.title }}</a>&nbsp;&nbsp;
+                    <p>发表时间：{{ moment(note.timestamp).format('LL') }}</p>
+
+            </li>
+            {% endfor %}
+        {% else %}
+            <h2>
+                <b>还没有任何文章</b>
+            </h2>
+            <div style="text-align:center">
+                <a style="font-size: 25px" href="{{ url_for('user.new_note2') }}">现在去写</a>
+            </div>
+        {% endif %}
+        </ul>
+    </div>
+</div>
+            {% if notes|length >15 %}
+                <div class="float-right">{{ render_pagination(pagination) }}</div>
+            {% endif %}
+

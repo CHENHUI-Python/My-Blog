@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+
+{% block x %}<br>
+    <div class="container">
+    </div>
+    <div class="page-header">
+    <div style="font-size: 60px"><p style="color:#fafafa">博客首页</p></div>
+    </div>
+    <div class="jumbotron">
+        <div class="row">
+            <div class="col-md-8">
+            {% if notes %}
+                {% for note in notes %}
+                    <h4>
+                        <a href="{{ url_for('user.show_note',note_id=note.id) }}">
+                            <b>{{ note.title }}</b>
+                        </a>
+                    </h4>
+                    {{ note.body|safe|striptags|truncate }}
+                    <a href="{{ url_for('user.show_note',note_id=note.id) }}">全部</a><br><br>
+                    {% for photo in note.photos %}
+                        <img  src="{{ url_for('photo.get_photo',filename=photo.filename_x) }}">
+                    {% endfor %}<br>
+                    <samll>
+                        作者 :
+                        <a href="{{ url_for('user.index',username=note.users.username) }}">
+                            {{ note.users.name }}
+                        </a>
+                    </samll>&nbsp;&nbsp;
+                    <small>
+                        类别 :
+                        <a href="{{ url_for('user.show_category',category_id=note.categorys.id) }}">
+                            {{ note.categorys.name }}
+                        </a>
+                    </small>&nbsp;&nbsp;
+                    <samll>
+                        评论 :
+                        <a href="{{ url_for('user.show_note',note_id=note.id) }}">
+                            {{ note.comment|length }}
+                        </a>
+                    </samll>&nbsp;&nbsp;
+                    <small>发表时间 : {{ moment(note.timestamp).format('LL') }} </small><hr>
+                {% endfor %}
+            {% else %}<br><br>
+                <div style="color:#8914fd" class="tip">
+                    <p style="text-align:center">
+                        <a style="font-size: 40px">空空如也</a>
+                    </p>
+                </div>
+            {% endif %}
+            {% if notes %}
+                <div class="page-footer">{{ render_pagination(pagination) }}</div>
+            {% endif %}
+            </div>
+                <div class="col-md-4">
+                    {% if current_user.is_authenticated %}
+                        {% include 'index/_index.html' %}
+                    {% else %}
+                        {% include '_sidebar.html' %}
+                    {% endif %}
+                </div>
+        </div>
+    </div>
+
+{% endblock x %}

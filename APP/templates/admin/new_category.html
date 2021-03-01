@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+
+{% block x %}<br>
+
+    <div class="page-header">
+    <h1 style="color:#fafafa">编辑分类</h1>
+    </div>
+    <div class="jumbotron">
+    <div class="row">
+        <div class="col-md-8">
+            <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>编号</th>
+                            <th>类名</th>
+                            <th>创建时间</th>
+                            <th>编辑与删除</th>
+                        </tr>
+                    </thead>
+                {% for categorys in category %}
+                    <tr>
+                        <td>{{ loop.index  }}</td>
+                        <td>{{ categorys.name }}</td>
+                        <td>{{ moment(categorys.timestamp).format('LL') }}</td>
+                        <td>
+                            <form method="post" action="{{ url_for('user.delete_category',category_id=categorys.id) }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <input class="bin btn-danger btn-sm" type="submit" value="删除"/>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table><hr>
+            <div class="jumbotron">
+                {{ render_form(form) }}
+            </div>
+        </div>
+            <div class="col-md-4">
+                {% include '_sidebar.html' %}
+            </div>
+    </div>
+</div>
+
+{% endblock x %}

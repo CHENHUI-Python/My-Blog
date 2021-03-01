@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+{% block x %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='jcrop/css/jquery.Jcrop.min.css') }}">
+{% endblock head %}
+    <div class="card w-100 bg-light">
+        <h3 class="card-header bg-light">更换头像</h3>
+        <div class="card-body">
+            {{ render_form(upload_form, action=url_for('photo.upload_avatar')) }}
+            <small class="text-muted">
+                文件大小必须小于3 MB，允许的格式为png和jpg.
+            </small>
+        </div>
+        <div class="card-body">
+            {{ avatars.crop_box('photo.get_avatar', current_user.avatar_raw) }}
+            {{ avatars.preview_box('photo.get_avatar', current_user.avatar_raw) }}
+        </div>
+        <div class="card-body">
+            {{ render_form(crop_form, action=url_for('photo.crop_avatar')) }}
+        </div>
+    </div>
+
+{% endblock x %}
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='jcrop/js/jquery.Jcrop.min.js') }}"></script>
+   {{ avatars.init_jcrop() }}
+{% endblock %}

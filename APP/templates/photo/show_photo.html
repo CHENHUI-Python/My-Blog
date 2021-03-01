@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% from 'macros.html' import photo_card %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block x %}
+    <div style="font-size: 25px">
+        <img  src="{{ url_for('photo.get_avatar',filename=user.avatar_m) }}" style="float:left;margin-right:10px;">
+        <p>
+            <a style="color:#ffffff" href="{{ url_for('user.index',username=user.username) }}">
+                {{ user.name }}
+            </a>
+        </p>
+        <p>
+            <small style="color:#ffffff">
+                注册时间：{{ moment(user.timestamp).format('LL') }}
+            </small>
+        </p>
+    </div>
+
+<div class="card w-100 bg-light">
+
+{% if current_user == user %}
+    <h3 class="card-header">我的相册 <a href="{{ url_for('photo.upload') }}">上传</a>
+        <span class="float-right">共{{ user.photos|length }}张照片</span>
+    </h3>
+{% else %}
+    <h3 class="card-header">{{user.name}}的相册
+        <span class="float-right">共{{ photos|length }}张照片</span>
+    </h3>
+{% endif %}
+    <div class="card-body">
+            {% if photos %}
+                {% for photo in photos %}
+                    <div class="photo-card card">
+                        <div class="card-thumbnail">
+                            <a href="{{ url_for('photo.one_photo',photo_id=photo.id) }}">
+                                <img src="{{ url_for('photo.get_photo',filename=photo.filename_s) }}">
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                    <h3 style="text-align:center">
+                        还没有任何照片 -
+                        <a href="{{ url_for('photo.upload') }}">现在上传</a>
+                    </h3>
+            {% endif %}
+            </div>
+        </div>
+        {% if photos %}
+            <div class="page-footer">{{ render_pagination(pagination) }}</div>
+        {% endif %}
+{% endblock %}

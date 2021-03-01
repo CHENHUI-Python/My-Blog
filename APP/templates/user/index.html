@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block x %}<br>
+
+<div class="page-header">
+<img src="{{ url_for('photo.get_avatar', filename=user.avatar_m) }}" style="float:left;margin-right:10px;"><br>
+    <p style="font-size: 25px"><a style="color:#ffffff"><b>{{ user.name }}</b></a></p>
+    <p style="color:#04156c">注册时间：{{ moment(user.timestamp).format('LL') }}</p>
+</div>
+<main>
+{% if current_user == user %}
+<a class="btn btn-light btn-sm" href="{{ url_for('user.new_note') }}">发表文章</a>&nbsp;&nbsp;
+<a class="btn btn-light btn-sm" href="{{ url_for('user.new_category') }}">编辑分类</a>&nbsp;&nbsp;
+<a class="btn btn-light btn-sm" href="{{ url_for('photo.upload') }}">上传图片</a>&nbsp;&nbsp;
+<a class="btn btn-light btn-sm" href="{{ url_for('photo.avatar') }}">更换头像</a>&nbsp;&nbsp;
+<a class="btn btn-light btn-sm" href="{{ url_for('photo.show_photo',username=current_user.username) }}">我的相册</a>
+<h1 class="float-right" style="color:#fafafa"><b>管理</b></h1>
+{% else %}
+    <a class="btn btn-light btn-sm" href="{{ url_for('photo.show_photo',username=user.username) }}">他的相册</a>
+{% endif %}
+</main>
+<div class="jumbotron">
+<div class="row">
+    <div class="col-md-8">
+    {% if current_user == user %}
+        <h2>我发布的文章:{{ notes|length }}</h2><br>
+    {% else %}
+        <h2>{{user.name}}-的全部作品:{{ notes|length }}</h2><br>
+    {% endif %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr style="text-align:center">
+                            <th>编号</th>
+                            <th>标题</th>
+                            <th>类别</th>
+                            <th>评论</th>
+                            <th>日期</th>
+                            {% if current_user == user %}
+                            <th>编辑</th>
+                            <th>删除</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    {% for note in notes %}
+                        <tr style="text-align:center">
+                            <td>{{ loop.index  }}</td>
+                            <td><a href="{{ url_for('user.show_note',note_id=note.id) }}">{{ note.title}}</a></td>
+                            <td>
+                                <a href="{{ url_for('user.show_category',category_id=note.id) }}">
+                                    {{ note.categorys.name }}
+                                </a>
+                            </td>
+                            <td>{{ note.comment|length }}</td>
+                            <td>{{ moment(note.timestamp).format('LL') }}</td>
+                            {% if current_user == user %}
+                            <td>
+                                <a href="{{ url_for('user.edit_note',note_id=note.id) }}">
+                                    <input class="bin btn-primary btn-sm" type="submit" value="编辑">
+                                </a>
+                            </td>
+                            <td>
+                                <form method="post" action="{{ url_for('user.delete_note',note_id=note.id) }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <input class="bin btn-danger btn-sm" type="submit" onclick="return confirm('确定删除吗')"
+                                       value="删除"/>
+                                </form>
+                            </td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+
+                <div class="col-md-4">
+                    {% include '_sidebar.html' %}
+                </div>
+        </div>
+</div>
+    {% if note %}
+        <div class="page-footer">{{ render_pagination(pagination) }}</div>
+    {% endif %}
+{% endblock x %}

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+{% from 'bootstrap/pagination.html' import render_pagination %}
+
+{% block x %}
+
+<div class="jumbotron">
+
+    <div class="page-header">
+        <h2 style="text-align:center"><span style="color:#C97626 ">{{ category.name }}</span> - 分类下的全部文章：{{ notes|length }}</h2>
+    </div><hr>
+    {% for note in notes %}
+        <h3>
+            <a href="{{ url_for('user.show_note',note_id=note.id) }}">
+                <p style="text-align:center"><b>{{ note.title }}</b></p>
+            </a>
+        </h3>
+        <div style="text-align:center">
+            {{ note.body|safe }} <br>
+            作者：
+            <a href="{{ url_for('user.index',username=note.users.username) }}">
+                {{ note.users.name }}&nbsp;&nbsp;
+            </a>
+            评论：
+            <a href="{{ url_for('user.show_note',note_id=note.id) }}">
+                {{ note.comment|length }}&nbsp;&nbsp;
+            </a>
+            发表时间：{{ moment(note.timestamp).format('LL') }}<hr><br>
+        </div>
+    {% endfor %}
+    </div>
+    <div class="page-footer">{{ render_pagination(pagination) }}</div>
+{% endblock x %}

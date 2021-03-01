@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+
+{% block x %}<br>
+    <div class="page-header" style="font-size: 80%">
+    <h1 style="color:#fafafa">注册账户</h1>
+    <a class="btn btn-light" href="{{ url_for('user.login') }}">登录</a>
+    </div>
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-md-6">
+            {{ render_form(form) }}
+        </div>
+        <div class="col-md-6">
+            <img src="{{ url_for('static',filename='images/index.jpg') }}" class="rounded img-fluid">
+        </div>
+    </div>
+</div>
+
+{% endblock x %}
