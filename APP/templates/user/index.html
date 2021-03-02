@@ -47,7 +47,7 @@
                             <td>{{ loop.index  }}</td>
                             <td><a href="{{ url_for('user.show_note',note_id=note.id) }}">{{ note.title}}</a></td>
                             <td>
-                                <a href="{{ url_for('user.show_category',category_id=note.id) }}">
+                                <a href="{{ url_for('user.show_category',category_id=note.categorys.id) }}">
                                     {{ note.categorys.name }}
                                 </a>
                             </td>

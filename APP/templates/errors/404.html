@@ -4,7 +4,7 @@
 {% block title %} 错误 - 404 {% endblock title %}
 
 {% block x %}<br><br><br><br><br>
-
+<div class="jumbotron">
 <div class="row">
     <div class="col-md-6"><br><br><br><br><br>
         <h1  class="float-right"><b>找不到页面了</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -13,8 +13,9 @@
 
     </div>
     <div class="col-md-6">
-        <img src="{{ url_for('static',filename='images/错误.png') }}" class="rounded img-fluid">
+        <img src="{{ url_for('static',filename='images/index.jpg') }}" class="rounded img-fluid">
     </div>
 </div><br><br><br><br><br>
+</div>
 
 {% endblock x %}
