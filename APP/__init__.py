@@ -5,7 +5,8 @@ from APP.配置 import config
 from APP.blueprints.index import index_bp
 from APP.blueprints.user import user_bp
 from APP.blueprints.photo import photo_bp
-from APP.扩展 import db,bootstrap,avatars,moment,login,ckeditor,csrf,dropzone
+from APP.blueprints.email import email_bp
+from APP.扩展 import db,bootstrap,avatars,moment,login,ckeditor,csrf,dropzone,mail
 
 
 def make_app(config_name=None):
@@ -27,6 +28,7 @@ def register_blueprint(app):
     app.register_blueprint(index_bp)
     app.register_blueprint(user_bp,url_prefix='/user')
     app.register_blueprint(photo_bp, url_prefix='/photo')
+    app.register_blueprint(email_bp,url_prefix='/email')
 
 
 def register_extend(app):
@@ -37,6 +39,7 @@ def register_extend(app):
     login.init_app(app)
     ckeditor.init_app(app)
     csrf.init_app(app)
+    mail.init_app(app)
     dropzone.init_app(app)
 
 

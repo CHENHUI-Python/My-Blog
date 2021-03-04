@@ -3,9 +3,11 @@ from flask import Blueprint
 from flask import render_template,flash,redirect,url_for,request,current_app
 from flask_login import current_user,login_user,logout_user,login_required
 from APP.forms.表单 import RegisterForm,LoginForm,CategoryForm,CommentForm,NoteForm
-from APP.forms.表单 import EditNoteForm,EditUserForm,ChangePasswordForm
+from APP.forms.表单 import EditNoteForm,EditUserForm,ChangePasswordForm,EmailForm,RetrievePasswordForm
 from APP.数据库 import User,Note,Category,Comment,Photo
+from APP.blueprints.email import generate_token,validate_token,send_confirm_email,send_reset_password_email
 from APP.扩展 import db
+from APP.配置 import Operations
 from APP.工具 import redirect_back,resize_image
 
 from flask_dropzone import random_filename
@@ -30,11 +32,16 @@ def register():
     if form.validate_on_submit():
         name = form.name.data
         username = form.username.data
-        user = User(name=name,username=username)
+        email = form.email.data.lower()
+        user = User(name=name,username=username,email=email)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
         flash('恭喜你注册成功','success')
+
+        token = generate_token(user=user, operation=Operations.CONFIRM)  # 生成邮箱验证令牌,第二个参数：操作确认
+        send_confirm_email(user=user, token=token)  # 发送验证邮件，验证上面的令牌
+        flash('认证邮件已发送，请查看你的邮箱', 'info')
         return redirect(url_for('index.index'))
     return render_template('user/register.html',form=form)
 
@@ -245,4 +252,50 @@ def delete_category(category_id):
     db.session.delete(categorys)
     db.session.commit()
     flash('成功删除一条分类','info')
+    return redirect_back()
+
+
+@user_bp.route('/retrieve_password/<token>',methods=['GET','POST'])
+def retrieve_password(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('index.index'))
+
+    form = RetrievePasswordForm()
+    user = User.query.filter_by(email=form.email.data).first()
+    if form.validate_on_submit():
+        if user:
+            if validate_token(user=user, token=token, operation=Operations.RESET_PASSWORD, new_password=form.password.data):
+                user.set_password(form.password.data)
+                db.session.commit()
+                flash('重置密码成功','info')
+                return redirect(url_for('user.login'))
+            else:
+                flash('令牌无效','danger')
+                return redirect(url_for('user.login'))
+        else:
+            flash('邮箱不匹配','danger')
+            redirect_back()
+    return render_template('user/retrieve_password.html',form=form)
+
+
+@user_bp.route('/email',methods=['GET','POST'])
+def email():
+    form = EmailForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data.lower()).first()
+        if user:
+            token = generate_token(user=user, operation=Operations.RESET_PASSWORD)
+            send_reset_password_email(user=user, token=token)
+            flash('重置密码的邮件已发送，请检查你的邮箱', 'info')
+            return redirect(url_for('user.login'))
+        else:
+            flash('该邮箱尚未注册，请检查邮箱地址重新输入','danger')
+            redirect_back()
+    return render_template('user/email.html',form=form)
+
+@user_bp.route('/validate_email')
+def validate_email():
+    token = generate_token(user=current_user, operation=Operations.CONFIRM)
+    send_confirm_email(user=current_user, token=token)
+    flash('验证账户的邮件已发送，请检查你的邮箱', 'info')
     return redirect_back()

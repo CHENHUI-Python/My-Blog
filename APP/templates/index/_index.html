@@ -10,7 +10,16 @@
                         {{ current_user.name }}
                     </a>
                 </a><br>
-                <a class="float-left" style="font-size: 20px"><b>作品</b>：{{ current_user.notes|length }}</a>
+                <a class="float-left" style="font-size: 16px"><b>状态</b>：
+                    {% if current_user.confirmed == True %}
+                        已认证
+                    {% else %}
+                        <a href="{{ url_for('user.validate_email') }}">
+                            未认证
+                        </a>
+                    {% endif %}
+                </a><br>
+                <a class="float-left" style="font-size: 16px"><b>作品</b>：{{ current_user.notes|length }}</a>
             </p>
         </div>
     </div>

@@ -10,9 +10,12 @@ class User(db.Model,UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20))
     username = db.Column(db.String(30), unique=True)
+    email = db.Column(db.String(254),unique=True)
     password_hash = db.Column(db.String(128))
     bio = db.Column(db.String(200))
     timestamp = db.Column(db.DateTime,default=datetime.utcnow)
+
+    confirmed = db.Column(db.Boolean, default=False)  # 验证用户的邮箱认证状态
 
     # 保存用户头像的3种尺寸的字段
     avatar_s = db.Column(db.String(64))
@@ -49,7 +52,7 @@ class User(db.Model,UserMixin):
 class Note(db.Model):
     id = db.Column(db.Integer,primary_key=True)
     title = db.Column(db.String(30))
-    body = db.Column(db.String(500))
+    body = db.Column(db.String(5000))
     can_comment = db.Column(db.Boolean,default=True) #评论区开关
     timestamp = db.Column(db.DateTime,default=datetime.utcnow,index=True)
 

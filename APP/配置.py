@@ -3,7 +3,19 @@ import os
 basedir = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
 
 
+class Operations:
+    CONFIRM = 'confirm' #确认认证邮箱
+    RESET_PASSWORD = 'reset-password' #重置密码
+    CHANGE_EMAIL = 'change-email' #更改电子邮件
+
 class BaseConfig(object):
+    MAIL_SERVER = os.getenv('MAIL_SERVER')
+    MAIL_PORT = 465
+    MAIL_USE_SSL = True
+    MAIL_USERNAME = os.getenv('MAIL_USERNAME')
+    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD')
+    MAIL_DEFAULT_SENDER = ('管理员', MAIL_USERNAME)
+
     ALBUMY_UPLOAD_PATH = os.path.join(basedir, 'uploads')  # 将上传的文件保存到程序的根目录 'uploads' 中
 
     ALBUMY_PHOTO_PER_PAGE = 6                             # 每页照片数量

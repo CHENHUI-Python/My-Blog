@@ -1,0 +1,6 @@
+你好 {{ user.username }},
+
+
+请访问下面的链接以验证您的新账号:
+
+    {{ url_for('email.confirm', token=token, _external=True) }}
