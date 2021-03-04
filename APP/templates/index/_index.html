@@ -13,7 +13,16 @@
                 <a class="float-left" style="font-size: 20px"><b>作品</b>：{{ current_user.notes|length }}</a>
             </p>
         </div>
-    </div><hr>
+    </div>
+        <hr>
+            <span style="font-size: 15px"><b>个性签名：</b>
+                {% if current_user.bio %}
+                    <a style="color: #fd7e14;">{{ current_user.bio }}</a>
+                {% else %}
+                    <a style="color: #fd7e14;">这个家伙很懒，什么都没留下</a>
+                {% endif %}
+            </span>
+        <hr>
 <div style="text-align:center" class="card-header"><h4 style="color:#fd5614"><b>文章列表</b></h4></div>
 <div class="list-group list-group-flush">
     <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">

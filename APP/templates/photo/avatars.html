@@ -1,28 +1,46 @@
 {% extends 'base.html' %}
 {% from 'bootstrap/form.html' import render_form %}
 
-{% block x %}
+{% block x %}<br>
 
-{% block head %}
-    {{ super() }}
-    <link rel="stylesheet" href="{{ url_for('static', filename='jcrop/css/jquery.Jcrop.min.css') }}">
-{% endblock head %}
-    <div class="card w-100 bg-light">
-        <h3 class="card-header bg-light">更换头像</h3>
-        <div class="card-body">
-            {{ render_form(upload_form, action=url_for('photo.upload_avatar')) }}
-            <small class="text-muted">
-                文件大小必须小于3 MB，允许的格式为png和jpg.
-            </small>
-        </div>
-        <div class="card-body">
-            {{ avatars.crop_box('photo.get_avatar', current_user.avatar_raw) }}
-            {{ avatars.preview_box('photo.get_avatar', current_user.avatar_raw) }}
-        </div>
-        <div class="card-body">
-            {{ render_form(crop_form, action=url_for('photo.crop_avatar')) }}
-        </div>
+    {% block head %}
+        {{ super() }}
+        <link rel="stylesheet" href="{{ url_for('static', filename='jcrop/css/jquery.Jcrop.min.css') }}">
+    {% endblock head %}
+
+    <div class="page-header" style="font-size: 80%">
+    <h1 style="color:#fafafa">修改个人资料</h1>
     </div>
+
+<div class="row">
+        <div class="col-md-3">
+            <div style="text-align:center" class="card w-100 bg-light">
+                <h3 class="card-header">选项</h3>
+                <div class="card-body">
+                    <a href="{{ url_for('user.edit_user') }}">更改资料</a><hr>
+                    <a href="{{ url_for('user.change_password') }}"><b>更改密码</b></a><hr>
+                    <a href="{{ url_for('photo.upload_avatar') }}"><b>更换头像</b></a><hr>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="card w-100 bg-light">
+                <h3 class="card-header">更换头像</h3>
+                    <div class="card-body">
+                        {{ render_form(upload_form, action=url_for('photo.upload_avatar')) }}
+                        <small class="text-muted">文件大小必须小于3 MB，允许的格式为png和jpg.</small>
+                        <div class="card-body">
+                            {{ avatars.crop_box('photo.get_avatar', current_user.avatar_raw) }}
+                            {{ avatars.preview_box('photo.get_avatar', current_user.avatar_raw) }}
+                        </div>
+                    <div class="card-body">
+                        {{ render_form(crop_form, action=url_for('photo.crop_avatar')) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+
 
 {% endblock x %}
 {% block scripts %}

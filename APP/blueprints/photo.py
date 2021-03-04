@@ -107,7 +107,7 @@ def avatar():
     return render_template('photo/avatars.html', upload_form=upload_form, crop_form=crop_form)
 
 
-@photo_bp.route('/upload_avatar',methods=['POST'])
+@photo_bp.route('/upload_avatar',methods=['GET','POST'])
 def upload_avatar():
     form = UploadAvatarForm()
     if form.validate_on_submit():

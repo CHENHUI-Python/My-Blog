@@ -79,7 +79,14 @@
                                 <a href="{{url_for('user.index',username=note.users.username) }}">{{ note.users.name }}</a>
                             </p>
                             <p>作品数量：{{ note.users.notes|length }}</p>
-                        注册时间：{{ moment(note.users.timestamp).format('LL') }}
+                        注册时间：{{ moment(note.users.timestamp).format('LL') }}<hr>
+                            <span style="font-size: 15px"><b>个性签名：</b>
+                                {% if note.users.bio %}
+                                    <a style="color: #fd7e14;">{{ note.users.bio }}</a>
+                                {% else %}
+                                    <a style="color: #fd7e14;">这个家伙很懒，什么都没留下</a>
+                                {% endif %}
+                            </span>
                     </div><hr>
             {% if note.photos %}
                 {% for photo in note.photos %}

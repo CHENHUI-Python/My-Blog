@@ -6,14 +6,14 @@
 <div class="page-header">
 <img src="{{ url_for('photo.get_avatar', filename=user.avatar_m) }}" style="float:left;margin-right:10px;"><br>
     <p style="font-size: 25px"><a style="color:#ffffff"><b>{{ user.name }}</b></a></p>
-    <p style="color:#04156c">注册时间：{{ moment(user.timestamp).format('LL') }}</p>
+    <p style="color:#ffffff">注册时间：{{ moment(user.timestamp).format('LL') }}</p>
 </div>
 <main>
 {% if current_user == user %}
 <a class="btn btn-light btn-sm" href="{{ url_for('user.new_note') }}">发表文章</a>&nbsp;&nbsp;
 <a class="btn btn-light btn-sm" href="{{ url_for('user.new_category') }}">编辑分类</a>&nbsp;&nbsp;
+<a class="btn btn-light btn-sm" href="{{ url_for('user.edit_user') }}">修改资料</a>&nbsp;&nbsp;
 <a class="btn btn-light btn-sm" href="{{ url_for('photo.upload') }}">上传图片</a>&nbsp;&nbsp;
-<a class="btn btn-light btn-sm" href="{{ url_for('photo.avatar') }}">更换头像</a>&nbsp;&nbsp;
 <a class="btn btn-light btn-sm" href="{{ url_for('photo.show_photo',username=current_user.username) }}">我的相册</a>
 <h1 class="float-right" style="color:#fafafa"><b>管理</b></h1>
 {% else %}

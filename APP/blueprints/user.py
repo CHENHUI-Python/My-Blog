@@ -2,7 +2,8 @@ import os
 from flask import Blueprint
 from flask import render_template,flash,redirect,url_for,request,current_app
 from flask_login import current_user,login_user,logout_user,login_required
-from APP.forms.表单 import RegisterForm,LoginForm,CategoryForm,CommentForm,NoteForm,EditNoteForm
+from APP.forms.表单 import RegisterForm,LoginForm,CategoryForm,CommentForm,NoteForm
+from APP.forms.表单 import EditNoteForm,EditUserForm,ChangePasswordForm
 from APP.数据库 import User,Note,Category,Comment,Photo
 from APP.扩展 import db
 from APP.工具 import redirect_back,resize_image
@@ -36,6 +37,36 @@ def register():
         flash('恭喜你注册成功','success')
         return redirect(url_for('index.index'))
     return render_template('user/register.html',form=form)
+
+
+@user_bp.route('/change_password',methods=['GET','POST'])
+def change_password():
+    form = ChangePasswordForm()
+    user = User.query.filter_by(username=current_user.username).first()
+    if form.validate_on_submit():
+        if user.validate_password(form.password.data):
+            user.set_password(form.change_password.data)
+            db.session.commit()
+            flash('密码修改成功','info')
+            return redirect(url_for('user.index', username=current_user.username))
+        flash('原密码错误，请再试一次','danger')
+        return redirect_back()
+    return render_template('user/change_password.html',form=form)
+
+
+@user_bp.route('/edit_user',methods=['GET','POST'])
+@login_required
+def edit_user():
+    form = EditUserForm()
+    if form.validate_on_submit():
+        current_user.name = form.name.data
+        current_user.bio = form.bio.data
+        db.session.commit()
+        flash('修改资料成功','info')
+        return redirect(url_for('user.index',username=current_user.username))
+    form.name.data = current_user.name
+    form.bio.data = current_user.bio
+    return render_template('user/edit_user.html',form=form)
 
 
 @user_bp.route('/login',methods=['GET','POST'])
@@ -161,9 +192,6 @@ def can_comment(note_id):
         flash('评论区已开启','info')
     db.session.commit()
     return redirect_back()
-
-
-
 
 
 

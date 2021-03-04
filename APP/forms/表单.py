@@ -20,6 +20,20 @@ class RegisterForm(FlaskForm):
         if User.query.filter_by(username=field.data).first():
             raise ValidationError('用户名已存在')
 
+
+class ChangePasswordForm(FlaskForm):
+    password = PasswordField('原密码',validators=[DataRequired(),Length(1,128)])
+    change_password = PasswordField('新密码',validators=[DataRequired(),Length(1,128),EqualTo('change_password2')])
+    change_password2 = PasswordField('确认密码',validators=[DataRequired()])
+    submit = SubmitField('确认更改')
+
+
+class EditUserForm(FlaskForm):
+    name = StringField('昵称',validators=[DataRequired(),Length(1,20)])
+    bio = StringField('个性签名',validators=[DataRequired(),Length(0,50)])
+    submit = SubmitField('确认修改')
+
+
 class LoginForm(FlaskForm):
     username = StringField('用户名',validators=[DataRequired(),Length(1,30)])
     password = PasswordField('密码',validators=[DataRequired(),Length(1,128)])
