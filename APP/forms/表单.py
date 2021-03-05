@@ -8,7 +8,6 @@ from flask_wtf.file import FileField,FileAllowed,FileRequired
 from APP.数据库 import User,Category
 
 
-
 class RegisterForm(FlaskForm):
     name = StringField('昵称',validators=[DataRequired(message='用户名不能为空'),Length(1,20)])
     username = StringField('用户名',validators=[DataRequired(),Length(1,30),
